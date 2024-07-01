@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
+using System.Linq;
 
 public enum Level
 {
@@ -15,17 +17,20 @@ public class Layout
 {
     public int row;
     public int column;
+    public int pairCount { get; }
 
     public Layout(int row, int col)
     {
         this.row = row;
         this.column = col;
+        this.pairCount = row * col / 2;
     }
 }
 
 public class BoardGenerator : MonoBehaviour
 {
 
+    public CardList config;
     public RectTransform cardContainer;
     public GameObject cardPrefab;
 
@@ -34,17 +39,20 @@ public class BoardGenerator : MonoBehaviour
     public List<GameObject> cardList;
 
 
+
     private GridLayoutGroup gridLayoutGroup;
     // Start is called before the first frame update
     void Start()
     {
         gridLayoutGroup = cardContainer.GetComponent<GridLayoutGroup>();
+        Generate();
     }
 
     void Generate()
     {
-        EmptyGrid();
         var layout = GetLayout();
+        var cardOptions = PickCards(layout.pairCount);
+
         gridLayoutGroup.constraint = GridLayoutGroup.Constraint.FixedRowCount;
         gridLayoutGroup.constraintCount = layout.row;
 
@@ -56,23 +64,34 @@ public class BoardGenerator : MonoBehaviour
 
         gridLayoutGroup.cellSize = new Vector2(cellWidth, cellHeight);
 
-        for (int r = 0; r < layout.row; r++)
+
+        for (int i = 0; i < layout.pairCount; i++)
         {
-            for (int c = 0; c < layout.column; c++)
+            var info = cardOptions[i];
+
+            for (int c = 0; c < 2; c++)
             {
                 var card = Instantiate(cardPrefab, this.transform);
+                var cardBehavior = card.GetComponent<CardBehavior>();
+                cardBehavior.SetCardMetadata(info);
                 cardList.Add(card);
             }
         }
 
-    }
-    public void EmptyGrid()
-    {
-        foreach (var card in cardList)
+        System.Random random = new System.Random();
+        cardList = cardList.OrderBy(x => random.Next()).ToList();
+
+        for (int i = 0; i < cardList.Count; i++)
         {
-            Destroy(card);
+            cardList[i].transform.SetSiblingIndex(i);
         }
-        cardList.Clear();
+
+    }
+
+    private List<Card> PickCards(int numberOfElements)
+    {
+        System.Random random = new System.Random();
+        return config.CardsOptions.OrderBy(x => random.Next()).Distinct().Take(numberOfElements).ToList();
     }
 
     private Layout GetLayout()
