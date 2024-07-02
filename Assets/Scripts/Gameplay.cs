@@ -5,7 +5,10 @@ using UnityEngine;
 public class Gameplay : MonoBehaviour
 {
 
-    public List<CardBehavior> selectedCards;
+    public int score;
+    public int comboCount;
+    private List<CardBehavior> selectedCards = new List<CardBehavior>();
+    
     void Start()
     {
         GameManager.Instance.RegisterForSingleOnEventOccured((this, "CardsGotGenerated"), Init);
@@ -29,11 +32,15 @@ public class Gameplay : MonoBehaviour
     {
         if (selectedCards[0].GetTag() == selectedCards[1].GetTag())
         {
+            comboCount++;
+            score = score + comboCount;
+
             selectedCards.ForEach(card => card.MarkAsSolved());
             selectedCards.Clear();
         }
         else
         {
+            comboCount = 0;
             StartCoroutine(UnFlipSelectedCards());
         }
     }

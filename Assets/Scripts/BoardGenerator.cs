@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -6,7 +7,7 @@ public class BoardGenerator : MonoBehaviour
 {
     public RectTransform cardContainer;
 
-    private List<GameObject> instanciatedCards = new List<GameObject>();
+    private List<CardBehavior> instanciatedCards = new List<CardBehavior>();
 
     private GridLayoutGroup gridLayoutGroup;
     void Start()
@@ -35,7 +36,7 @@ public class BoardGenerator : MonoBehaviour
                 card.name = info.tag;
                 var cardBehavior = card.GetComponent<CardBehavior>();
                 cardBehavior.SetCardMetadata(info);
-                instanciatedCards.Add(card);
+                instanciatedCards.Add(cardBehavior);
             }
         }
 
@@ -52,9 +53,17 @@ public class BoardGenerator : MonoBehaviour
         {
             instanciatedCards[i].transform.SetSiblingIndex(i);
         }
+        StartCoroutine(UnFlipCards());
 
         GameManager.Instance.SetCardsList(instanciatedCards);
         GameManager.Instance.TriggerEvent("CardsGotGenerated");
+    }
+
+    IEnumerator UnFlipCards()
+    {
+        yield return new WaitForSeconds(0.5f);
+        instanciatedCards.ForEach(card => card.UnFlip());
+
     }
 
     private void ConfigureCellsSize(Layout layout)

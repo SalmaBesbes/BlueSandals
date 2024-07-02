@@ -19,6 +19,8 @@ public class CardBehavior : MonoBehaviour
     public void SetCardMetadata(Card metadata)
     {
         card = metadata;
+        spriteRenderer.sprite = card.sprite;
+
     }
     public string GetTag()
     {

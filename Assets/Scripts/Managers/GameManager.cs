@@ -10,7 +10,7 @@ public class GameManager : EventManager
     private Config config;
     public static GameManager Instance { get; private set; }
 
-    private List<GameObject> cards;
+    private List<CardBehavior> cards;
 
     private void Awake()
     {
@@ -72,12 +72,12 @@ public class GameManager : EventManager
         }
     }
 
-    public void SetCardsList(List<GameObject> list)
+    public void SetCardsList(List<CardBehavior> list)
     {
         cards = list;
     }
 
-    public List<GameObject> GetCardsList()
+    public List<CardBehavior> GetCardsList()
     {
         return cards;
     }
