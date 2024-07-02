@@ -1,5 +1,6 @@
 
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -28,8 +29,17 @@ public class GameManager : EventManager
         }
     }
 
-    private void Start()
+    void Start()
     {
+        RegisterForOnEventOccured((this, "GameOver"), StartGame);
+    }
+
+    public void StartGame()
+    {
+        Array values = Enum.GetValues(typeof(Level));
+        System.Random random = new System.Random();
+        Level randomLevel = (Level)values.GetValue(random.Next(values.Length));
+        SetCurrentLevel(randomLevel);
         TriggerEvent("InitializeGame");
     }
 

@@ -38,7 +38,6 @@ public class Gameplay : MonoBehaviour
     {
         GameManager.Instance.GetCardsList().ForEach(card =>
                 {
-                    Debug.Log(card.name);
                     card.OnFlip.Register(this, (card) =>
                     {
                         selectedCards.Add(card);
@@ -65,7 +64,12 @@ public class Gameplay : MonoBehaviour
             selectedCards.Clear();
 
             var pairCount = GameManager.Instance.GetLayout().GetPairCount();
-            if (resolvedCount == pairCount) GameManager.Instance.TriggerEvent("GameOver");
+            if (resolvedCount == pairCount)
+            {
+                GameManager.Instance.playGameOverSound();
+                resolvedCount = 0;
+                GameManager.Instance.TriggerEvent("GameOver");
+            };
         }
         else
         {

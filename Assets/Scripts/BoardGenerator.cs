@@ -14,7 +14,7 @@ public class BoardGenerator : MonoBehaviour
     {
         gridLayoutGroup = cardContainer.GetComponent<GridLayoutGroup>();
         GameManager.Instance.OnLoad.Register(this, (savedData) => GenerateFromLoadedData(savedData));
-        GameManager.Instance.RegisterForSingleOnEventOccured((this, "InitializeGame"), Generate);
+        GameManager.Instance.RegisterForOnEventOccured((this, "InitializeGame"), Generate);
     }
 
 
@@ -23,7 +23,7 @@ public class BoardGenerator : MonoBehaviour
         var layout = GameManager.Instance.GetLayout();
         SaveData.currentSave.layout = layout;
 
-        ConfigureCellsSize(layout);
+        CleanUp(layout);
 
         var pairCount = layout.GetPairCount();
         var cardOptions = GameManager.Instance.PickRandomUniqueCards(pairCount);
@@ -67,15 +67,7 @@ public class BoardGenerator : MonoBehaviour
     void GenerateFromLoadedData(SaveData savedData)
     {
         var cardPrefab = GameManager.Instance.GetCardPrefab();
-        ConfigureCellsSize(savedData.layout);
-
-
-        instanciatedCards.Clear();
-        for (int i = 0; i < cardContainer.transform.childCount; i++)
-        {
-            Destroy(cardContainer.GetChild(i).gameObject);
-        }
-
+        CleanUp(savedData.layout);
 
         savedData.cards.ForEach(info =>
         {
@@ -99,6 +91,18 @@ public class BoardGenerator : MonoBehaviour
             if (card.GetMetaData().isResolved) card.MarkAsSolved();
             else card.UnFlip();
         });
+
+    }
+
+    void CleanUp(Layout layout)
+    {
+        ConfigureCellsSize(layout);
+
+        instanciatedCards.Clear();
+        for (int i = 0; i < cardContainer.transform.childCount; i++)
+        {
+            Destroy(cardContainer.GetChild(i).gameObject);
+        }
 
     }
 
