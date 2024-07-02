@@ -1,5 +1,4 @@
 
-using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
@@ -7,9 +6,11 @@ using UnityEngine.UI;
 public class CardBehavior : MonoBehaviour
 {
     Card card;
+    public Sprite defaultSprite;
     private float flipValue = 0f;
     private Image spriteRenderer;
-    // Start is called before the first frame update
+
+    public CustomEvent<CardBehavior> OnFlip = new CustomEvent<CardBehavior>("onFlip");
     void Awake()
     {
         spriteRenderer = GetComponent<Image>();
@@ -18,19 +19,14 @@ public class CardBehavior : MonoBehaviour
     public void SetCardMetadata(Card metadata)
     {
         card = metadata;
-        card.id = new Guid().ToString();
     }
     public string GetTag()
     {
         return card.tag;
     }
-    public string Id()
-    {
-        return card.id;
-    }
-
     public void OnClick()
     {
+        OnFlip.Call(this);
         StartCoroutine(Flip());
     }
 
@@ -48,9 +44,10 @@ public class CardBehavior : MonoBehaviour
         }
     }
 
+
     public void UnFlip()
     {
-        spriteRenderer.sprite = null;
+        spriteRenderer.sprite = defaultSprite;
         flipValue = 0f;
     }
 
