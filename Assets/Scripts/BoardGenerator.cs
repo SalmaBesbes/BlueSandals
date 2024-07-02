@@ -57,12 +57,10 @@ public class BoardGenerator : MonoBehaviour
         gridLayoutGroup.constraintCount = layout.row;
 
         float width = cardContainer.rect.width;
-        float height = cardContainer.rect.height;
 
-        float cellWidth = (width - (gridLayoutGroup.padding.left + gridLayoutGroup.padding.right) - (gridLayoutGroup.spacing.x * (layout.column - 1))) / layout.column;
-        float cellHeight = (height - (gridLayoutGroup.padding.top + gridLayoutGroup.padding.bottom) - (gridLayoutGroup.spacing.y * (gridLayoutGroup.constraintCount - 1))) / gridLayoutGroup.constraintCount;
+        float cellSize = (width - (gridLayoutGroup.padding.left + gridLayoutGroup.padding.right) - (gridLayoutGroup.spacing.x * (layout.column - 1))) / layout.column;
 
-        gridLayoutGroup.cellSize = new Vector2(cellWidth, cellHeight);
+        gridLayoutGroup.cellSize = new Vector2(cellSize, cellSize);
 
 
         for (int i = 0; i < layout.pairCount; i++)
@@ -72,6 +70,7 @@ public class BoardGenerator : MonoBehaviour
             for (int c = 0; c < 2; c++)
             {
                 var card = Instantiate(cardPrefab, this.transform);
+                card.name = info.tag;
                 var cardBehavior = card.GetComponent<CardBehavior>();
                 cardBehavior.SetCardMetadata(info);
                 cardList.Add(card);

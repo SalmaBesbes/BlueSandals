@@ -1,4 +1,6 @@
 
+using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,29 +14,50 @@ public class CardBehavior : MonoBehaviour
     {
         spriteRenderer = GetComponent<Image>();
     }
-    void Start()
-    {
-        spriteRenderer.sprite = card.sprite;
-    }
 
     public void SetCardMetadata(Card metadata)
     {
         card = metadata;
-
+        card.id = new Guid().ToString();
+    }
+    public string GetTag()
+    {
+        return card.tag;
+    }
+    public string Id()
+    {
+        return card.id;
     }
 
-    // Update is called once per frame
-    void Update()
+    public void OnClick()
     {
-        if (flipValue < 1)
+        StartCoroutine(Flip());
+    }
+
+    IEnumerator Flip()
+    {
+        while (flipValue < 1)
         {
             flipValue += 0.05f;
             this.transform.localScale = new Vector3(flipValue, this.transform.localScale.y, this.transform.localScale.z);
-
-        }
-        if (flipValue < 0.5)
-        {
-            spriteRenderer.sprite = card.sprite;
+            if (flipValue < 0.5)
+            {
+                spriteRenderer.sprite = card.sprite;
+            }
+            yield return null;
         }
     }
+
+    public void UnFlip()
+    {
+        spriteRenderer.sprite = null;
+        flipValue = 0f;
+    }
+
+    public void MarkAsSolved()
+    {
+        var button = this.GetComponent<Button>();
+        button.interactable = false;
+    }
+
 }
