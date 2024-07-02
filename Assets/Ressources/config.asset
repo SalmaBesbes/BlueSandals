@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 108c03fd963134b92bee499f2b3a7712, type: 3}
   m_Name: config
   m_EditorClassIdentifier: 
-  level: 1
+  level: 2
   cardPrefab: {fileID: 7415492929433203022, guid: 5672c28131dce42f08afefca6d7276c6, type: 3}
   CardsOptions:
   - tag: cat

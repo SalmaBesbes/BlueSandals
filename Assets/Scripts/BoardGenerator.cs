@@ -32,7 +32,7 @@ public class BoardGenerator : MonoBehaviour
 
             for (int c = 0; c < 2; c++)
             {
-                var card = Instantiate(cardPrefab, this.transform);
+                var card = Instantiate(cardPrefab, cardContainer.transform);
                 card.name = info.tag;
                 var cardBehavior = card.GetComponent<CardBehavior>();
                 cardBehavior.SetCardMetadata(info);

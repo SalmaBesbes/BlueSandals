@@ -1,14 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class Gameplay : MonoBehaviour
 {
 
-    public int score;
-    public int comboCount;
+    private int score;
+    private int comboCount;
+    private int attempsCount;
     private List<CardBehavior> selectedCards = new List<CardBehavior>();
-    
+
+    public TextMeshProUGUI scoreText;
+    public TextMeshProUGUI comboText;
+    public TextMeshProUGUI attempsText;
+
+
     void Start()
     {
         GameManager.Instance.RegisterForSingleOnEventOccured((this, "CardsGotGenerated"), Init);
@@ -30,10 +37,13 @@ public class Gameplay : MonoBehaviour
 
     void CheckSelectedCombination()
     {
+        attempsCount++;
+        attempsText.text = "Attemps: " + attempsCount;
         if (selectedCards[0].GetTag() == selectedCards[1].GetTag())
         {
             comboCount++;
             score = score + comboCount;
+            scoreText.text = "Score: " + score;
 
             selectedCards.ForEach(card => card.MarkAsSolved());
             selectedCards.Clear();
@@ -43,6 +53,8 @@ public class Gameplay : MonoBehaviour
             comboCount = 0;
             StartCoroutine(UnFlipSelectedCards());
         }
+        comboText.text = "Combo: " + comboCount;
+
     }
 
     IEnumerator UnFlipSelectedCards()
