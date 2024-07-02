@@ -10,5 +10,9 @@ public class Config : ScriptableObject
     [SerializeField]
     public List<Card> CardsOptions;
 
+    public AudioClip correctSFX;
+    public AudioClip wrongSFX;
+    public AudioClip GameOver;
+    public AudioClip FlipCard;
 
 }

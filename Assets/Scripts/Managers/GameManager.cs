@@ -13,6 +13,7 @@ public class GameManager : EventManager
     private List<CardBehavior> cards;
 
     public CustomEvent<SaveData> OnLoad = new CustomEvent<SaveData>("OnLoad");
+    public AudioSource audioSource;
 
     private void Awake()
     {
@@ -97,4 +98,21 @@ public class GameManager : EventManager
         OnLoad.Call(savedGame);
     }
 
+
+    public void playFlipSound()
+    {
+        audioSource.PlayOneShot(config.FlipCard);
+    }
+    public void playCorrectSound()
+    {
+        audioSource.PlayOneShot(config.correctSFX);
+    }
+    public void playWrongSound()
+    {
+        audioSource.PlayOneShot(config.wrongSFX);
+    }
+    public void playGameOverSound()
+    {
+        audioSource.PlayOneShot(config.GameOver);
+    }
 }

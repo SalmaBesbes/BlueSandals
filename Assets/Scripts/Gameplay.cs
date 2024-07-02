@@ -54,6 +54,8 @@ public class Gameplay : MonoBehaviour
         attempsText.text = "Attemps: " + attempsCount;
         if (selectedCards[0].GetTag() == selectedCards[1].GetTag())
         {
+            GameManager.Instance.playCorrectSound();
+
             resolvedCount++;
             comboCount++;
             score = score + comboCount;
@@ -67,6 +69,8 @@ public class Gameplay : MonoBehaviour
         }
         else
         {
+            GameManager.Instance.playWrongSound();
+
             comboCount = 0;
             StartCoroutine(UnFlipSelectedCards());
         }

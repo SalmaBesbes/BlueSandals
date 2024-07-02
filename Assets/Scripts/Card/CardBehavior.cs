@@ -32,6 +32,7 @@ public class CardBehavior : MonoBehaviour
     }
     public void OnClick()
     {
+        GameManager.Instance.playFlipSound();
         OnFlip.Call(this);
         StartCoroutine(Flip());
     }
