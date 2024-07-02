@@ -9,6 +9,7 @@ public class Gameplay : MonoBehaviour
     private int score;
     private int comboCount;
     private int attempsCount;
+    private int resolvedCount;
     private List<CardBehavior> selectedCards = new List<CardBehavior>();
 
     public TextMeshProUGUI scoreText;
@@ -18,12 +19,13 @@ public class Gameplay : MonoBehaviour
 
     void Start()
     {
-        GameManager.Instance.RegisterForSingleOnEventOccured((this, "CardsGotGenerated"), Init);
+        GameManager.Instance.RegisterForOnEventOccured((this, "CardsGotGenerated"), Init);
         GameManager.Instance.OnLoad.Register(this, (savedData) =>
         {
             score = savedData.Score;
             comboCount = savedData.Combo;
             attempsCount = savedData.Attemps;
+            resolvedCount = savedData.resolvedCount;
             attempsText.text = "Attemps: " + attempsCount;
             scoreText.text = "Score: " + score;
             comboText.text = "Combo: " + comboCount;
@@ -36,8 +38,8 @@ public class Gameplay : MonoBehaviour
     {
         GameManager.Instance.GetCardsList().ForEach(card =>
                 {
-                    var behavior = card.GetComponent<CardBehavior>();
-                    behavior.OnFlip.Register(this, (card) =>
+                    Debug.Log(card.name);
+                    card.OnFlip.Register(this, (card) =>
                     {
                         selectedCards.Add(card);
                         if (selectedCards.Count > 1) CheckSelectedCombination();
@@ -52,12 +54,16 @@ public class Gameplay : MonoBehaviour
         attempsText.text = "Attemps: " + attempsCount;
         if (selectedCards[0].GetTag() == selectedCards[1].GetTag())
         {
+            resolvedCount++;
             comboCount++;
             score = score + comboCount;
             scoreText.text = "Score: " + score;
 
             selectedCards.ForEach(card => card.MarkAsSolved());
             selectedCards.Clear();
+
+            var pairCount = GameManager.Instance.GetLayout().GetPairCount();
+            if (resolvedCount == pairCount) GameManager.Instance.TriggerEvent("GameOver");
         }
         else
         {
@@ -69,6 +75,8 @@ public class Gameplay : MonoBehaviour
         SaveData.currentSave.Attemps = attempsCount;
         SaveData.currentSave.Combo = comboCount;
         SaveData.currentSave.Score = score;
+        SaveData.currentSave.resolvedCount = resolvedCount;
+
     }
 
     IEnumerator UnFlipSelectedCards()

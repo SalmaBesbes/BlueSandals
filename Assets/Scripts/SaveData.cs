@@ -17,7 +17,7 @@ public class SaveData
         }
     }
 
-
+    public int resolvedCount;
     public int Score;
     public int Attemps;
     public int Combo;
