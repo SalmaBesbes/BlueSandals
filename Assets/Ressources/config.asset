@@ -17,49 +17,77 @@ MonoBehaviour:
   CardsOptions:
   - tag: cat
     sprite: {fileID: -305812565, guid: dafb7f0afe33144bbb94e06711d34187, type: 3}
+    isResolved: 0
   - tag: elephent
     sprite: {fileID: -1412902636, guid: dafb7f0afe33144bbb94e06711d34187, type: 3}
+    isResolved: 0
   - tag: girraffe
     sprite: {fileID: -1092847976, guid: dafb7f0afe33144bbb94e06711d34187, type: 3}
+    isResolved: 0
   - tag: hippo
     sprite: {fileID: -1777368230, guid: dafb7f0afe33144bbb94e06711d34187, type: 3}
+    isResolved: 1
   - tag: koala
     sprite: {fileID: -1364369817, guid: dafb7f0afe33144bbb94e06711d34187, type: 3}
+    isResolved: 0
   - tag: monkey
     sprite: {fileID: 571455823, guid: dafb7f0afe33144bbb94e06711d34187, type: 3}
+    isResolved: 0
   - tag: mouse
     sprite: {fileID: -1407681852, guid: dafb7f0afe33144bbb94e06711d34187, type: 3}
+    isResolved: 0
   - tag: panda
     sprite: {fileID: -1891065159, guid: dafb7f0afe33144bbb94e06711d34187, type: 3}
+    isResolved: 1
   - tag: bee
     sprite: {fileID: -1910427885, guid: 7c75e5ce42a5a436ebc32c844bb91403, type: 3}
+    isResolved: 0
   - tag: bird
     sprite: {fileID: -1204636777, guid: 7c75e5ce42a5a436ebc32c844bb91403, type: 3}
+    isResolved: 0
   - tag: flower
     sprite: {fileID: 1322693170, guid: 7c75e5ce42a5a436ebc32c844bb91403, type: 3}
+    isResolved: 0
   - tag: ladybug
     sprite: {fileID: 435050873, guid: 7c75e5ce42a5a436ebc32c844bb91403, type: 3}
+    isResolved: 1
   - tag: leaf
     sprite: {fileID: 1706426266, guid: 7c75e5ce42a5a436ebc32c844bb91403, type: 3}
+    isResolved: 1
   - tag: snail
     sprite: {fileID: -1272136284, guid: 7c75e5ce42a5a436ebc32c844bb91403, type: 3}
+    isResolved: 0
   - tag: watering can
     sprite: {fileID: -310367094, guid: 7c75e5ce42a5a436ebc32c844bb91403, type: 3}
+    isResolved: 0
   - tag: yellow flower
     sprite: {fileID: -985774113, guid: 7c75e5ce42a5a436ebc32c844bb91403, type: 3}
+    isResolved: 0
   - tag: blue fish
     sprite: {fileID: -1358804768, guid: 52ed2b24476cc4080bfa980e2fffa5db, type: 3}
+    isResolved: 0
   - tag: jellyfish
     sprite: {fileID: -1390042217, guid: 52ed2b24476cc4080bfa980e2fffa5db, type: 3}
+    isResolved: 0
   - tag: octupos
     sprite: {fileID: -204749948, guid: 52ed2b24476cc4080bfa980e2fffa5db, type: 3}
+    isResolved: 0
   - tag: round shell
     sprite: {fileID: -1961531508, guid: 52ed2b24476cc4080bfa980e2fffa5db, type: 3}
+    isResolved: 0
   - tag: shell
     sprite: {fileID: 444946700, guid: 52ed2b24476cc4080bfa980e2fffa5db, type: 3}
+    isResolved: 0
   - tag: starfish
     sprite: {fileID: 1015644308, guid: 52ed2b24476cc4080bfa980e2fffa5db, type: 3}
+    isResolved: 0
   - tag: turtule
     sprite: {fileID: -437982174, guid: 52ed2b24476cc4080bfa980e2fffa5db, type: 3}
+    isResolved: 0
   - tag: yellow fish
     sprite: {fileID: -786124597, guid: 52ed2b24476cc4080bfa980e2fffa5db, type: 3}
+    isResolved: 0
+  correctSFX: {fileID: 8300000, guid: 107e02dacc15145b48d6c7ada5c0f210, type: 3}
+  wrongSFX: {fileID: 8300000, guid: b3bcc2919f4e4493c838fddb2c74fd88, type: 3}
+  GameOver: {fileID: 8300000, guid: f21d5d43b31c9486e8fd6560fe1d94eb, type: 3}
+  FlipCard: {fileID: 8300000, guid: bd78ca8e0221c4c84884a0f85d7ee852, type: 3}
