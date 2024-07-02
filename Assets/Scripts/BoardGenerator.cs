@@ -1,69 +1,31 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using System;
-using System.Linq;
-
-public enum Level
-{
-    easy,
-    Medium,
-    Hard
-}
-
-
-public class Layout
-{
-    public int row;
-    public int column;
-    public int pairCount { get; }
-
-    public Layout(int row, int col)
-    {
-        this.row = row;
-        this.column = col;
-        this.pairCount = row * col / 2;
-    }
-}
 
 public class BoardGenerator : MonoBehaviour
 {
-
-    public CardList config;
     public RectTransform cardContainer;
-    public GameObject cardPrefab;
 
-    public Level level = Level.easy;
-
-    public List<GameObject> cardList;
-
-
+    private List<GameObject> instanciatedCards = new List<GameObject>();
 
     private GridLayoutGroup gridLayoutGroup;
-    // Start is called before the first frame update
     void Start()
     {
         gridLayoutGroup = cardContainer.GetComponent<GridLayoutGroup>();
-        Generate();
+        GameManager.Instance.RegisterForSingleOnEventOccured((this, "InitializeGame"), Generate);
     }
 
     void Generate()
     {
-        var layout = GetLayout();
-        var cardOptions = PickCards(layout.pairCount);
+        var layout = GameManager.Instance.GetLayout();
 
-        gridLayoutGroup.constraint = GridLayoutGroup.Constraint.FixedRowCount;
-        gridLayoutGroup.constraintCount = layout.row;
+        ConfigureCellsSize(layout);
 
-        float width = cardContainer.rect.width;
+        var pairCount = layout.GetPairCount();
+        var cardOptions = GameManager.Instance.PickRandomUniqueCards(pairCount);
+        var cardPrefab = GameManager.Instance.GetCardPrefab();
 
-        float cellSize = (width - (gridLayoutGroup.padding.left + gridLayoutGroup.padding.right) - (gridLayoutGroup.spacing.x * (layout.column - 1))) / layout.column;
-
-        gridLayoutGroup.cellSize = new Vector2(cellSize, cellSize);
-
-
-        for (int i = 0; i < layout.pairCount; i++)
+        for (int i = 0; i < pairCount; i++)
         {
             var info = cardOptions[i];
 
@@ -73,38 +35,42 @@ public class BoardGenerator : MonoBehaviour
                 card.name = info.tag;
                 var cardBehavior = card.GetComponent<CardBehavior>();
                 cardBehavior.SetCardMetadata(info);
-                cardList.Add(card);
+                instanciatedCards.Add(card);
             }
         }
 
-        System.Random random = new System.Random();
-        cardList = cardList.OrderBy(x => random.Next()).ToList();
-
-        for (int i = 0; i < cardList.Count; i++)
+        var random = new System.Random();
+        for (int i = instanciatedCards.Count - 1; i > 0; i--)
         {
-            cardList[i].transform.SetSiblingIndex(i);
+            int randomIndex = random.Next(i + 1);
+            var temp = instanciatedCards[i];
+            instanciatedCards[i] = instanciatedCards[randomIndex];
+            instanciatedCards[randomIndex] = temp;
         }
 
-    }
-
-    private List<Card> PickCards(int numberOfElements)
-    {
-        System.Random random = new System.Random();
-        return config.CardsOptions.OrderBy(x => random.Next()).Distinct().Take(numberOfElements).ToList();
-    }
-
-    private Layout GetLayout()
-    {
-        switch (level)
+        for (int i = 0; i < instanciatedCards.Count; i++)
         {
-            case Level.easy:
-                return new Layout(2, 2);
-            case Level.Medium:
-                return new Layout(2, 3);
-            case Level.Hard:
-                return new Layout(5, 6);
-            default:
-                return new Layout(2, 2);
+            instanciatedCards[i].transform.SetSiblingIndex(i);
         }
+
+        GameManager.Instance.SetCardsList(instanciatedCards);
+        GameManager.Instance.TriggerEvent("CardsGotGenerated");
     }
+
+    private void ConfigureCellsSize(Layout layout)
+    {
+
+        gridLayoutGroup.constraint = GridLayoutGroup.Constraint.FixedRowCount;
+        gridLayoutGroup.constraintCount = layout.row;
+
+        float width = cardContainer.rect.width;
+
+        float cellSize = (width -
+        (gridLayoutGroup.padding.left + gridLayoutGroup.padding.right) -
+        (gridLayoutGroup.spacing.x * (layout.column - 1)))
+        / layout.column;
+
+        gridLayoutGroup.cellSize = new Vector2(cellSize, cellSize);
+    }
+
 }
