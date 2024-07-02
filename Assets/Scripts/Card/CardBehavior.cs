@@ -22,6 +22,10 @@ public class CardBehavior : MonoBehaviour
         spriteRenderer.sprite = card.sprite;
 
     }
+    public Card GetMetaData()
+    {
+        return card;
+    }
     public string GetTag()
     {
         return card.tag;
@@ -57,6 +61,7 @@ public class CardBehavior : MonoBehaviour
     {
         var button = this.GetComponent<Button>();
         button.interactable = false;
+        card.isResolved = true;
     }
 
 }

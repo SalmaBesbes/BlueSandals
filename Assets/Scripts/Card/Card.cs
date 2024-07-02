@@ -7,4 +7,5 @@ public class Card
 {
     public string tag;
     public Sprite sprite;
+    public bool isResolved;
 }

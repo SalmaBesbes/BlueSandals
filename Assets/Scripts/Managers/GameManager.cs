@@ -12,6 +12,8 @@ public class GameManager : EventManager
 
     private List<CardBehavior> cards;
 
+    public CustomEvent<SaveData> OnLoad = new CustomEvent<SaveData>("OnLoad");
+
     private void Awake()
     {
 
@@ -55,6 +57,7 @@ public class GameManager : EventManager
     public void SetCurrentLevel(Level level)
     {
         config.level = level;
+        SaveData.currentSave.level = level;
     }
 
     public Layout GetLayout()
@@ -81,4 +84,17 @@ public class GameManager : EventManager
     {
         return cards;
     }
+
+    public void SaveGame()
+    {
+        cards.ForEach(c => SaveData.currentSave.cards.Add(c.GetMetaData()));
+        SaveLoadGame.Save();
+    }
+
+    public void LoadGame()
+    {
+        var savedGame = SaveLoadGame.Load();
+        OnLoad.Call(savedGame);
+    }
+
 }

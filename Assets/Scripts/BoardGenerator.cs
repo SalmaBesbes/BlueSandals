@@ -13,12 +13,15 @@ public class BoardGenerator : MonoBehaviour
     void Start()
     {
         gridLayoutGroup = cardContainer.GetComponent<GridLayoutGroup>();
+        GameManager.Instance.OnLoad.Register(this, (savedData) => GenerateFromLoadedData(savedData));
         GameManager.Instance.RegisterForSingleOnEventOccured((this, "InitializeGame"), Generate);
     }
+
 
     void Generate()
     {
         var layout = GameManager.Instance.GetLayout();
+        SaveData.currentSave.layout = layout;
 
         ConfigureCellsSize(layout);
 
@@ -34,10 +37,12 @@ public class BoardGenerator : MonoBehaviour
             {
                 var card = Instantiate(cardPrefab, cardContainer.transform);
                 card.name = info.tag;
+                info.isResolved = false;
                 var cardBehavior = card.GetComponent<CardBehavior>();
                 cardBehavior.SetCardMetadata(info);
                 instanciatedCards.Add(cardBehavior);
             }
+
         }
 
         var random = new System.Random();
@@ -59,10 +64,41 @@ public class BoardGenerator : MonoBehaviour
         GameManager.Instance.TriggerEvent("CardsGotGenerated");
     }
 
+    void GenerateFromLoadedData(SaveData savedData)
+    {
+        var cardPrefab = GameManager.Instance.GetCardPrefab();
+        ConfigureCellsSize(savedData.layout);
+
+
+        instanciatedCards.Clear();
+        for (int i = 0; i < cardContainer.transform.childCount; i++)
+        {
+            Destroy(cardContainer.GetChild(i).gameObject);
+        }
+
+
+        savedData.cards.ForEach(info =>
+        {
+            var card = Instantiate(cardPrefab, cardContainer.transform);
+            card.name = info.tag;
+            var cardBehavior = card.GetComponent<CardBehavior>();
+            cardBehavior.SetCardMetadata(info);
+            instanciatedCards.Add(cardBehavior);
+        });
+        StartCoroutine(UnFlipCards());
+
+        GameManager.Instance.SetCardsList(instanciatedCards);
+        GameManager.Instance.TriggerEvent("CardsGotGenerated");
+    }
+
     IEnumerator UnFlipCards()
     {
         yield return new WaitForSeconds(0.5f);
-        instanciatedCards.ForEach(card => card.UnFlip());
+        instanciatedCards.ForEach(card =>
+        {
+            if (card.GetMetaData().isResolved) card.MarkAsSolved();
+            else card.UnFlip();
+        });
 
     }
 

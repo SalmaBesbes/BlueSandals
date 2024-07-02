@@ -19,6 +19,17 @@ public class Gameplay : MonoBehaviour
     void Start()
     {
         GameManager.Instance.RegisterForSingleOnEventOccured((this, "CardsGotGenerated"), Init);
+        GameManager.Instance.OnLoad.Register(this, (savedData) =>
+        {
+            score = savedData.Score;
+            comboCount = savedData.Combo;
+            attempsCount = savedData.Attemps;
+            attempsText.text = "Attemps: " + attempsCount;
+            scoreText.text = "Score: " + score;
+            comboText.text = "Combo: " + comboCount;
+
+        });
+
     }
 
     void Init()
@@ -55,6 +66,9 @@ public class Gameplay : MonoBehaviour
         }
         comboText.text = "Combo: " + comboCount;
 
+        SaveData.currentSave.Attemps = attempsCount;
+        SaveData.currentSave.Combo = comboCount;
+        SaveData.currentSave.Score = score;
     }
 
     IEnumerator UnFlipSelectedCards()
@@ -63,7 +77,5 @@ public class Gameplay : MonoBehaviour
         selectedCards.ForEach(card => card.UnFlip());
         selectedCards.Clear();
     }
-
-
 
 }
