@@ -1,49 +1,50 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 public class Gameplay : MonoBehaviour
 {
 
     public List<CardBehavior> selectedCards;
-
-    public EventSystem eventSystem;
-    // Start is called before the first frame update
     void Start()
     {
-
+        GameManager.Instance.RegisterForSingleOnEventOccured((this, "CardsGotGenerated"), Init);
     }
 
-    // Update is called once per frame
-    void Update()
+    void Init()
     {
-        if (eventSystem.currentSelectedGameObject)
-        {
-
-            Debug.Log(eventSystem.currentSelectedGameObject);
-            Debug.Log(selectedCards.Count);
-            var card = eventSystem.currentSelectedGameObject.GetComponent<CardBehavior>();
-            selectedCards.Add(card);
-            eventSystem.SetSelectedGameObject(null);
-
-            if (selectedCards.Count > 1)
-            {
-                Debug.Log(selectedCards[0].GetTag() == card.GetTag());
-
-                if (selectedCards[0].GetTag() == card.GetTag())
+        GameManager.Instance.GetCardsList().ForEach(card =>
                 {
-                    selectedCards[0].MarkAsSolved();
-                    card.MarkAsSolved();
-                }
-                else
-                {
-                    card.UnFlip();
-                    selectedCards[0].UnFlip();
-                    selectedCards.Clear();
-                }
-            }
-        }
-
+                    var behavior = card.GetComponent<CardBehavior>();
+                    behavior.OnFlip.Register(this, (card) =>
+                    {
+                        selectedCards.Add(card);
+                        if (selectedCards.Count > 1) CheckSelectedCombination();
+                    });
+                });
     }
+
+
+    void CheckSelectedCombination()
+    {
+        if (selectedCards[0].GetTag() == selectedCards[1].GetTag())
+        {
+            selectedCards.ForEach(card => card.MarkAsSolved());
+            selectedCards.Clear();
+        }
+        else
+        {
+            StartCoroutine(UnFlipSelectedCards());
+        }
+    }
+
+    IEnumerator UnFlipSelectedCards()
+    {
+        yield return new WaitForSeconds(0.2f);
+        selectedCards.ForEach(card => card.UnFlip());
+        selectedCards.Clear();
+    }
+
+
+
 }
